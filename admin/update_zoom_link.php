@@ -28,12 +28,14 @@ if(isset($_POST['submit'])){
    $start = filter_var($start, FILTER_SANITIZE_STRING);
    $end = $_POST['end'];
    $end = filter_var($end, FILTER_SANITIZE_STRING);
+   $price = $_POST['price'];
+   $price = filter_var($price, FILTER_SANITIZE_STRING);
    $date = date('M-d-Y');
    $status = $_POST['status'];
    $status = filter_var($status, FILTER_SANITIZE_STRING);
 
-   $update_user = $conn->prepare("UPDATE `zoom` SET title = ?, link = ?, password = ?, start = ?, end = ?, date = ?, status = ? WHERE id = ?");
-   $update_user->execute([$title, $link, $pass, $start, $end, $date, $status, $get_id]);
+   $update_user = $conn->prepare("UPDATE `zoom` SET title = ?, link = ?, password = ?, start = ?, end = ?, price = ?, date = ?, status = ? WHERE id = ?");
+   $update_user->execute([$title, $link, $pass, $start, $end, $price, $date, $status, $get_id]);
 
 
    $message[] = 'User Information updated!';  
@@ -1203,9 +1205,11 @@ section{
             <input type="text" name="start" value="<?= $fetch_zoom['start']; ?>" maxlength="50"  class="box">
             <p>End Time </p>
             <input type="text" name="end" value="<?= $fetch_zoom['end']; ?>" maxlength="50"  class="box">
+            <p>Event Prive</p>
+            <input type="text" name="price" value="<?= $fetch_zoom['price']; ?>" maxlength="50"  class="box">
             <p>Status </p>
             <select name="status" class="box">
-               <option value="" selected><?= $fetch_zoom['status']; ?></option>
+               <option value="<?= $fetch_zoom['status']; ?>" selected><?= $fetch_zoom['status']; ?></option>
                <option value="Active">Active</option>
                <option value="Inactive">Inactive</option>
             </select>
