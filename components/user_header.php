@@ -147,6 +147,7 @@ if(isset($message)){
             <a href="about.php"><i class="fas fa-circle-info"></i><span>About Us</span></a>
             <a href="FAQs.php"><i class="fas fa-question-circle"></i><span>FAQs</span></a>
             <a href="http://yanverabrenica.x10.mx/wp/hrmbsi-events/?post=2441"><i class="fas fa-calendar"></i><span>OLSP Events</span></a>
+            <a href="zoom_links.php"><i class="fas fa-link"></i><span>Zoom Seminars</span></a>
             <!--<a href="courses.php"><i class="fas fa-graduation-cap"></i><span>Courses</span></a>-->
             <a href="teachers.php"><i class="fas fa-chalkboard-user"></i><span>Creators</span></a>
             <a href="contact.php"><i class="fas fa-headset"></i><span>Contact Us</span></a>
