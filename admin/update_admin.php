@@ -1239,7 +1239,7 @@ section{
             <input type="text" name="name" placeholder="<?= $fetch_admin['name']; ?>" maxlength="50"  class="box">-->
             <p>Status </p>
             <select name="status" class="box">
-               <option value="" selected><?= $fetch_admin['status']; ?></option>
+               <option value="<?= $fetch_zoom['status']; ?>" selected><?= $fetch_admin['status']; ?></option>
                <option value="Active">Active</option>
                <option value="Inactive">Inactive</option>
             </select>
