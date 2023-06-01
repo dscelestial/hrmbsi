@@ -1708,7 +1708,7 @@ section{
 
 <section class="playlists">
 
-   <h1 class="heading">Zoom Links</h1>
+   <h1 class="heading">Upcoming Events</h1>
 
    <div class="box-container">
 
