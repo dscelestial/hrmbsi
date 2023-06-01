@@ -34,7 +34,7 @@ if(isset($_POST['delete'])){
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>HRMBSi | Playlists</title>
+   <title>HRMBSi | Zoom Links</title>
    <link rel="icon" href="../images/hrmbsi icon.png">
 
    <!-- font awesome cdn link  -->
@@ -1160,7 +1160,7 @@ section{
 
 <section class="playlists">
 
-   <h1 class="heading">Users 
+   <h1 class="heading">Zoom Links 
    <div class="box" style="text-align: center;">
          <a href="add_zoom_link.php" class="inline-btn"><i class="fas fa-plus"></i> Create Zoom Link</a>
    </div></h1>
@@ -1183,6 +1183,7 @@ section{
          <h3 class="title"><?= $rowzoom['title']; ?></h3>
          <p class="start">Start Session: <?= $rowzoom['start']; ?></p>
          <p class="end">End Session: <?= $rowzoom['end']; ?></p>
+         <p class="end">Event Price: <?= $rowzoom['price']; ?></p>
          <form action="" method="post" class="flex-btn">
             <input type="hidden" name="id" value="<?= $id; ?>">
             <a href="update_zoom_link.php?get_id=<?= $id; ?>" class="option-btn"><i class="fas fa-pen"></i> Update</a>
