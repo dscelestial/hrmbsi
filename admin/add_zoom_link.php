@@ -22,6 +22,8 @@ if(isset($_POST['submit'])){
    $start = filter_var($start, FILTER_SANITIZE_STRING);
    $end = $_POST['end'];
    $end = filter_var($end, FILTER_SANITIZE_STRING);
+   $price = $_POST['price'];
+   $price = filter_var($price, FILTER_SANITIZE_STRING);
    $date = date('M-d-Y');
    $status = $_POST['status'];
    $status = filter_var($status, FILTER_SANITIZE_STRING);
@@ -32,8 +34,8 @@ if(isset($_POST['submit'])){
    if($select_zoom->rowCount() > 0){
       $message[] = 'Link already attached!';
    }else{
-         $insert_zoom = $conn->prepare("INSERT INTO `zoom`(id, title, link, password, start, end, date, status) VALUES(?,?,?,?,?,?,?,?)");
-         $insert_zoom->execute([$id, $title, $link, $pass, $start, $end, $date, $status]);
+         $insert_zoom = $conn->prepare("INSERT INTO `zoom`(id, title, link, password, start, end, price, date, status) VALUES(?,?,?,?,?,?,?,?,?)");
+         $insert_zoom->execute([$id, $title, $link, $pass, $start, $end, $price, $date, $status]);
 
             $message[] = 'Zoom link added!';
             //header('location:home.php');//
@@ -50,7 +52,7 @@ if(isset($_POST['submit'])){
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>HRMBSi | Create User</title>
+   <title>HRMBSi | Create Zoom Link</title>
    <link rel="icon" href="../images/hrmbsi icon.png">
 
    <!-- password toggle  -->
@@ -1192,6 +1194,8 @@ section{
             <input type="text" name="start" placeholder="Enter start time" required class="box">
          <p>End Time<span>*</span></p>
             <input type="text" name="end" placeholder="Enter end time" required class="box">
+         <p>Event Price<span>*</span></p>
+            <input type="text" name="price" placeholder="Enter event price" required class="box">
            </div>
       </div>
       	 <p>Status <span>*</span></p>
