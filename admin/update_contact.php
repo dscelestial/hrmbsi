@@ -46,6 +46,8 @@ if(isset($_POST['submit'])){
    $name = filter_var($name, FILTER_SANITIZE_STRING);
    $email = $_POST['email'];
    $email = filter_var($email, FILTER_SANITIZE_STRING);
+   $event_title = $_POST['event_title'];
+   $event_title = filter_var($event_title, FILTER_SANITIZE_STRING);
    $status = $_POST['status'];
    $status = filter_var($status, FILTER_SANITIZE_STRING);
 
@@ -58,17 +60,16 @@ if(isset($_POST['submit'])){
    $datetoday = date('M-d-Y');
 
    $font = '../components/inc/16304_GARA.ttf';
-   $image = imagecreatefrompng("../images/ecert.png"); // template ng cert
+   $image = imagecreatefrompng("../images/ecert_zoom.png"); // template ng cert
    $color = imagecolorallocate($image, 19, 21, 22);
-   if (strlen($name) < 15){
-   imagettftext($image, 25, 0, 180, 305, $color, $font, $name);// Name sa gitna ng Cert
+   $center_name = (imagesx($image)/2) - (15*(strlen($name)/2));
+   $center_title = (imagesx($image)/2) - (15*(strlen($event_title)/2));
+
+   imagettftext($image, 25, 0, $center_name, 305, $color, $font, $name);// Name sa gitna ng Cert
+   imagettftext($image, 25, 0, $center_title, 385, $color, $font, $event_title);// Event Title sa gitna ng Cert
    $date = date('M-d-Y');
-   imagettftext($image, 10, 0, 225, 435, $color, $font, $date); // Date
-   } else {
-   imagettftext($image, 25, 0, 105, 305, $color, $font, $name);// Name sa gitna ng Cert
-   $date = date('M-d-Y');
-   imagettftext($image, 10, 0, 220, 435, $color, $font, $date); // Date   
-   }
+   imagettftext($image, 15, 0, 200, 435, $color, $font, $date); // Date
+
    $file = $name;
    $time = time();
 
@@ -78,8 +79,8 @@ if(isset($_POST['submit'])){
    $attachment_link = $file . "-" . $date . "-" . $time . ".png";
    $link_folder = '../uploaded_files/ecert/' . $attachment_link;
 
-         $insert_user = $conn->prepare("INSERT INTO `ecert`(user_id, name, email, attachmentlink, attachmentloc, date) VALUES(?,?,?,?,?,?)");
-         $insert_user->execute([$user_id, $name, $email, $attachment_link, $link_folder, $datetoday]);
+         $insert_user = $conn->prepare("INSERT INTO `ecert_zoom`(user_id, name, email, event_title, attachmentlink, attachmentloc, date) VALUES(?,?,?,?,?,?,?)");
+         $insert_user->execute([$user_id, $name, $email, $event_title, $attachment_link, $link_folder, $datetoday]);
          $message[] = 'Certificate Created! Visit their profile to view their Certificate.';
          //echo "<center><img src='$imgpath' class='img-thumbnail'><center>";   
 
@@ -1244,11 +1245,12 @@ section{
           $select_msg = $conn->prepare("SELECT * FROM `contact` WHERE id = ?");
           $select_msg->execute([$get_id]);
           $fetch_msg = $select_msg->fetch(PDO::FETCH_ASSOC);
-             $id = $fetch_msg['id'];
- 			 $user_id = $fetch_msg['user_id'];
-             $name = $fetch_msg['name'];
-             $email = $fetch_msg['email'];
-             $status = $fetch_msg['status'];
+            $id = $fetch_msg['id'];
+ 			   $user_id = $fetch_msg['user_id'];
+            $name = $fetch_msg['name'];
+            $email = $fetch_msg['email'];
+            $event_title = $fetch_msg['event_title'];
+            $status = $fetch_msg['status'];
 
           $select_tuts = $conn->prepare("SELECT * FROM `tutors` WHERE id = ?");
           $select_tuts->execute([$tutor_id]);
@@ -1265,11 +1267,13 @@ section{
             <input type="text" name="user_id" value="<?= $fetch_msg['user_id']; ?>" required class="box" readonly hidden>
             <p hidden>Email <span>*</span></p>
             <input type="email" name="email" value="<?= $fetch_msg['email']; ?>" required class="box" readonly hidden>
-            <p>Name <span>*</span></p>
+            <p>Name <span></span></p>
             <input type="text" name="name" value="<?= $fetch_msg['name']; ?>" required class="box" readonly>
+            <p>Event Title <span></span></p>
+            <input type="text" name="event_title" value="<?= $fetch_msg['event_title']; ?>" required class="box" readonly>
 			<p>Status </p>
             <select name="status" class="box">
-               <option value="" selected><?= $fetch_msg['status']; ?></option>
+               <option value="<?= $fetch_msg['status']; ?>" selected><?= $fetch_msg['status']; ?></option>
                <option value="Approved">Approved</option>
                <option value="Declined">Declined</option>
             </select>
