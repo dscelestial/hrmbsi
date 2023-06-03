@@ -1670,6 +1670,7 @@ section{
          <img src="uploaded_files/<?= $fetch_profile['image']; ?>" alt="">
          <h3><?= $fetch_profile['name']; ?></h3>
          <p>Welcome to your Profile!</p>
+         <button type="button" class="inline-btn" data-toggle="modal" data-target="#modules"><i class="fas fa-file"></i> Completed Modules</button>
          <button type="button" class="inline-btn" data-toggle="modal" data-target="#ecert"><i class="fas fa-file"></i> Certificates</button>
          <button type="button" class="inline-btn" data-toggle="modal" data-target="#payments"><i class="fas fa-dollar"></i> Payments</button>
          <a href="update.php" class="inline-btn"><i class="fas fa-pen"></i> Update Profile</a>
@@ -1685,7 +1686,7 @@ section{
                   <span>Saved Playlists</span>
                </div>
             </div>
-            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Playlists</a>
+            <a href="courses.php" class="inline-btn"><i class="fas fa-eye"></i> View Playlists</a>
          </div>
 
          <div class="box">
@@ -1696,7 +1697,7 @@ section{
                   <span>Liked Tutorials</span>
                </div>
             </div>
-            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Liked</a>
+            <a href="courses.php" class="inline-btn"><i class="fas fa-eye"></i> View Liked</a>
          </div>
 
          <div class="box">
@@ -1707,7 +1708,7 @@ section{
                   <span>Video Comments</span>
                </div>
             </div>
-            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Comments</a>
+            <a href="courses.php" class="inline-btn"><i class="fas fa-eye"></i> View Comments</a>
          </div>
       </div>
    </div>
@@ -1838,6 +1839,25 @@ section{
                            } ?></td>
             </tr>
         <?php } ?>
+
+        <?php
+        $users = $conn->query("SELECT * FROM ecert_zoom WHERE user_id = '$user_id'");
+        while ($rowuser = $users->fetch()) {
+        $user_id = $rowuser['user_id'];
+        $name= $rowuser['name'];
+        $attachmentlink = $rowuser['attachmentlink'];
+        $date = $rowuser['date'];    
+        ?>
+            <tr>
+                <!--<td><?php echo $user_id;?></td>-->
+                <td><?php echo $name;?></td>
+                <td><?php echo $date;?></td>
+                <td><?php if (!empty($attachmentlink)) {
+                              echo '<a href="downloadfile.php?attachmentlink=' .  $rowuser['attachmentlink'] . '" class="option-btn" style="text-decoration: none;">Download</a>';
+                           } else {
+                           } ?></td>
+            </tr>
+        <?php } ?>
         </tbody>
     </table>
         </div>
@@ -1849,6 +1869,65 @@ section{
     </div>
   </div>
 <!-- ecert modal ends -->
+
+
+
+<!-- module modal start -->
+ <!-- Modal -->
+ <div class="modal fade" id="modules" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modules Completed</h4>
+        </div>
+        <div class="modal-body">
+        <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <!--<th>ID</th>-->
+                <th>Name</th>
+                <th>Event Title</th>
+                <!--<th>Attachment</th>-->
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        <?php
+        $users = $conn->query("SELECT c.*, cc.*, u.* FROM content AS c JOIN content_completion AS cc ON c.id = cc.content_id JOIN users AS u ON cc.user_id = u.id WHERE cc.user_id = '$user_id'");
+        while ($rowuser = $users->fetch()) {
+        $user_id = $rowuser['user_id'];
+        $name= $rowuser['name'];
+        $title= $rowuser['title'];
+        //$attachmentlink = $rowuser['attachmentlink'];
+        $date = $rowuser['date'];    
+        ?>
+            <tr>
+                <!--<td><?php echo $user_id;?></td>-->
+                <td><?php echo $name;?></td>
+                <td><?php echo $title;?></td>
+                <td><?php echo $date;?></td>
+                <!--<td><?php if (!empty($attachmentlink)) {
+                              echo '<a href="downloadfile.php?attachmentlink=' .  $rowuser['attachmentlink'] . '" class="option-btn" style="text-decoration: none;">Download</a>';
+                           } else {
+                           } ?></td>-->
+            </tr>
+        <?php } ?>
+        </tbody>
+    </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+<!-- module modal ends -->
+
 
 
 <!-- footer section starts 
