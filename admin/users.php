@@ -1164,6 +1164,7 @@ section{
    <div class="box" style="text-align: center;">
          <a href="add_user.php" class="inline-btn"><i class="fas fa-plus"></i> Add User</a>
          <a href="registrations.php" class="inline-btn"><i class="fas fa-users"></i> New Registrations</a>
+         <a href="user_completed_modules.php" class="inline-btn"><i class="fas fa-book"></i> User Module Completion Log</a>
          <a href="admins.php" class="inline-btn"><i class="fas fa-users"></i> Administrators</a>
    </div></h1>
    <div class="box-container">
@@ -1187,7 +1188,7 @@ section{
             <a href="update_user.php?get_id=<?= $id; ?>" class="option-btn"><i class="fas fa-pen"></i> Update</a>
             <input type="submit" value="delete" class="delete-btn" onclick="return confirm('Delete this user?');" name="delete">
          </form>
-         <a href="add_user_certificate.php?get_id=<?= $id; ?>" class="btn"><i class="fas fa-file"></i> Create Certificate</a>
+         <!--<a href="add_user_certificate.php?get_id=<?= $id; ?>" class="btn"><i class="fas fa-file"></i> Create Certificate</a>-->
          <a href="user_profile.php?get_id=<?= $id; ?>" class="btn"><i class="fas fa-eye"></i> View Profile</a>
       </div>
       <?php } ?>

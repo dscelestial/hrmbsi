@@ -13,7 +13,7 @@ if(isset($_GET['get_id'])){
     $get_id = $_GET['get_id'];
  }else{
     $get_id = '';
-    header('location:users.php');
+    header('location:user_messages.php');
  }
 
 require "vendor/autoload.php";

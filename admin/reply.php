@@ -13,7 +13,7 @@ if(isset($_GET['get_id'])){
     $get_id = $_GET['get_id'];
  }else{
     $get_id = '';
-    header('location:users.php');
+    header('location:user_messages.php');
  }
 
  require "C:xampp/htdocs/hrmbsi/vendor/autoload.php";
@@ -26,7 +26,7 @@ if(isset($_GET['get_id'])){
           $fetch_msg = $select_msg->fetch(PDO::FETCH_ASSOC);
              $id = $fetch_msg['id'];
              $name1 = $fetch_msg['name'];
-             $email = $fetch_msg['email'];
+             $email1 = $fetch_msg['email'];
 
 if(isset($_POST['submit'])){
 
@@ -39,8 +39,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '313f38c4bad511';
+   $phpmailer->Password = '2c18d304bdd4cf';
 
    $subject = "HRMBSI DLP";
    $gmail = "inquiries@hrmbsi.com.ph";
@@ -66,7 +66,7 @@ if(isset($_POST['submit'])){
          $insert_user->execute([$get_id, $tutor_id, $name, $email, $msg, $timeactivity]);
 
          $phpmailer->setFrom($gmail,$hname);
-         $phpmailer->addAddress($email, $name);
+         $phpmailer->addAddress($email1, $name);
      
          $phpmailer->Subject = $subject;
          $phpmailer->Body = $messages;
@@ -1228,7 +1228,7 @@ section{
       <h3>Reply to Message</h3>
       <div class="flex">
          <div class="col">
-            <p>User ID <span>*</span></p>
+            <p>Feedback ID <span>*</span></p>
             <input type="text" name="id" value="<?= $fetch_msg['id']; ?>" required class="box" readonly>
             <!--<p>Name <span>*</span></p>-->
             <input type="text" name="name" value="<?= $fetch_tuts['name']; ?>" required class="box" readonly hidden>

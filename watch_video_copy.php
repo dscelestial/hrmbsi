@@ -8,6 +8,13 @@ if(isset($_COOKIE['user_id'])){
    $user_id = '';
 }
 
+if(isset($_GET['get_id'])){
+   $get_id = $_GET['get_id'];
+}else{
+   $get_id = '';
+   header('location:home.php');
+}
+
 require "vendor/autoload.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -1724,8 +1731,6 @@ section{
 
 
 
-
-
 .footer{
    position: sticky;
    bottom: 0; right: 0; left: 0;
@@ -1864,21 +1869,6 @@ section{
       height: auto;
    }
 
-   .youtube_title{
-            text-align: center;
-            margin: auto;
-            background-color: green;
-            width: 60rem;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-
-}
-
-.youtube_title{
-   text-align: center;
-   font-size: 3em;
-   font-weight: 1000;
 }
    </style>
 
@@ -1919,10 +1909,10 @@ section{
 <section class="watch-video">
 
    <?php
-            $select_content = $conn->prepare("SELECT * FROM `content` WHERE status = ?");
-            $select_content->execute(['active']);
-            if($select_content->rowCount() > 0){
-            if($fetch_content = $select_content->fetch(PDO::FETCH_ASSOC)){
+      $select_content = $conn->prepare("SELECT * FROM `content` WHERE id = ? AND status = ?");
+      $select_content->execute([$get_id, 'active']);
+      if($select_content->rowCount() > 0){
+         while($fetch_content = $select_content->fetch(PDO::FETCH_ASSOC)){
             $content_id = $fetch_content['id'];
 
             $select_likes = $conn->prepare("SELECT * FROM `likes` WHERE content_id = ?");
@@ -1945,33 +1935,56 @@ section{
             $select_tutor = $conn->prepare("SELECT * FROM `tutors` WHERE id = ? LIMIT 1");
             $select_tutor->execute([$fetch_content['tutor_id']]);
             $fetch_tutor = $select_tutor->fetch(PDO::FETCH_ASSOC);
-
-            $stmt = $conn->prepare("SELECT * FROM content");
-            $stmt->execute();
- 
-            $ytid1 = $stmt->fetch(PDO::FETCH_ASSOC);
-            $module43 = $ytid1['link'];
-
-            $ytid2 = $stmt->fetch(PDO::FETCH_ASSOC);
-            $module45 = $ytid2['link'];
-
-            $ytid3 = $stmt->fetch(PDO::FETCH_ASSOC);
-            $module47 = $ytid3['link'];
-
    ?>
    <div class="video-details">
-      <iframe id="youtubeIframe" width="1125" height="560" src="https://www.youtube.com/embed/G3nWFr35e7I?" frameborder="1" allowfullscreen></iframe>
-     
-      <form action="" method="post">
       
+      <iframe id="myVideo" src="<?= $fetch_content['link']; ?>" class="video" poster="uploaded_files/<?= $fetch_content['thumb']; ?>"></iframe>
+
+      <form action="" method="post">
          <input type="hidden" name="content_id" value="<?= $content_id; ?>">
          <?php
             if($verify_completion->rowCount() > 0){
          ?>
          <button type="submit" name="complete" class="inline-delete-btn" onclick="return confirm('Mark as Incomplete?');">Mark as Incomplete</button>
          <button onclick = "stopVideo(body)" class="inline-delete-btn"> Stop Video </button>
-         <button id="nextvid" onclick="changeYouTubeSrc()">Next Video</button>
+         <!--<button type="submit" name="certificate" class="inline-option-btn" onclick="return confirm('Generate your Certificate?');">Next Video</button>-->
 
+
+            <?php
+               if($verify_completion1->rowCount() == 1){
+                  $select_content1 = $conn->prepare("SELECT * FROM `content` WHERE id = ? AND status = ?");
+                  $select_content1->execute(['e7zSxaOfT6mpNnfkscIu', 'Active']);
+                  $fetch_content1 = $select_content1->fetch(PDO::FETCH_ASSOC);
+            ?>
+            <a type="btn" href="#" class="inline-btn">Complete all Modules to generate your Certificate</a>
+            <a href="watch_video_copy.php?get_id=<?= $fetch_content1['id']; ?>" class="inline-btn"><i class="fas fa-eye"></i> Next</a>
+            <?php
+            }else if($verify_completion1->rowCount() == 2){
+                  $select_content2 = $conn->prepare("SELECT * FROM `content` WHERE id = ? AND status = ?");
+                  $select_content2->execute(['9Hdt7hvYzKmO6dkopjkQ', 'Active']);
+                  $fetch_content2 = $select_content2->fetch(PDO::FETCH_ASSOC);
+            ?>
+            
+            <a type="btn" href="#" class="inline-btn">Complete all Modules to generate your Certificate</a>
+            <a href="watch_video_copy.php?get_id=<?= $fetch_content2['id']; ?>" class="inline-btn"><i class="fas fa-eye"></i> Next</a>
+            <?php
+            }else if($verify_completion1->rowCount() == 3){
+                  $select_content2 = $conn->prepare("SELECT * FROM `content` WHERE id = ? AND status = ?");
+                  $select_content2->execute(['vpVcfCNquH543nEGhSrR', 'Active']);
+                  $fetch_content2 = $select_content2->fetch(PDO::FETCH_ASSOC);
+            ?>
+            
+            <a type="btn" href="#" class="inline-btn">Complete all Modules to generate your Certificate</a>
+            <a href="watch_video_copy.php?get_id=<?= $fetch_content2['id']; ?>" class="inline-btn"><i class="fas fa-eye"></i> Next</a>
+            <?php
+            }else{
+            ?>
+         
+            <a type="btn" href="#" class="inline-btn">Complete all Modules to generate your Certificate</a>
+            <?php
+               }
+            ?>
+         
          <?php
 
          }else{
@@ -1979,27 +1992,11 @@ section{
          <button type="submit" name="complete" class="inline-option-btn" onclick="return confirm('Mark as complete?');">Mark as Complete</button>
          <button onclick = "stopVideo(body)" class="inline-delete-btn"> Stop Video </button>
          
-         
-         <?php
-            }
-         ?>
-
-         <input type="hidden" name="content_id" value="<?= $content_id; ?>">
-         <?php
-            if($verify_completion1->rowCount() >= 1){
-         ?>
-         <button type="submit" name="certificate" class="inline-option-btn" onclick="return confirm('Generate your Certificate?');">Generate Certificate</button>
-         
-         <?php
-
-         }else{
-         ?>
-         <a type="btn" href="#" class="inline-btn">Complete all Modules to generate your Certificate</a>
          <?php
             }
          ?>
       </form>
-      <h2 class="title"><?= "Destination" ?></h2>
+      <h3 class="title"><?= $fetch_content['title']; ?></h3>
       <div class="info">
          <p><i class="fas fa-calendar"></i><span><?= $fetch_content['date']; ?></span></p>
          <p><i class="fas fa-heart"></i><span><?= $total_likes; ?> likes</span></p>
@@ -2097,31 +2094,12 @@ section{
 
 <!-- comments section ends -->
 
+
+
+
+
+
 <script>
-      var youtube1 = "<?php echo $module43 ?>";
-      var youtube2 = "<?php echo $module45 ?>";
-      var youtube3 = "<?php echo $module47 ?>";
-      
-      var counter = 0;
-      var sources = [
-         youtube1,
-         youtube2,
-         youtube3,
-      ];
-
-      function changeYouTubeSrc() {
-         var iframe = document.getElementById('youtubeIframe');
-
-         var newSrc = sources[counter];
-
-         iframe.src = newSrc;
-         counter++;
-
-         if (counter >= sources.length) {
-            counter = 0;
-         }
-      }
-
       // to stop the video
       function stopVideo(element) {
          // getting every iframe from the body

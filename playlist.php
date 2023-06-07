@@ -1665,7 +1665,7 @@ section{
 
 <section class="playlist">
 
-   <h1 class="heading">playlist details</h1>
+   <h1 class="heading">Playlist Details</h1>
 
    <div class="row">
 
@@ -1696,17 +1696,17 @@ section{
             <?php
                if($select_bookmark->rowCount() > 0){
             ?>
-            <button type="submit" name="save_list"><i class="fas fa-bookmark"></i><span>saved</span></button>
+            <button type="submit" name="save_list"><i class="fas fa-bookmark"></i><span>Saved</span></button>
             <?php
                }else{
             ?>
-               <button type="submit" name="save_list"><i class="far fa-bookmark"></i><span>save playlist</span></button>
+               <button type="submit" name="save_list"><i class="far fa-bookmark"></i><span>Save playlist</span></button>
             <?php
                }
             ?>
          </form>
          <div class="thumb">
-            <span><?= $total_videos; ?> videos</span>
+            <span><?= $total_videos; ?> Videos</span>
             <img src="uploaded_files/<?= $fetch_playlist['thumb']; ?>" alt="">
          </div>
       </div>
@@ -1747,16 +1747,30 @@ section{
    <div class="box-container">
 
       <?php
-         $select_content = $conn->prepare("SELECT * FROM `content` WHERE playlist_id = ? AND status = ? ORDER BY date DESC");
-         $select_content->execute([$get_id, 'active']);
+         $select_content = $conn->prepare("SELECT * FROM `content` WHERE playlist_id = ? AND status = ? ORDER BY date ASC LIMIT 1");
+         $select_content->execute([$get_id, 'Active']);
          if($select_content->rowCount() > 0){
             while($fetch_content = $select_content->fetch(PDO::FETCH_ASSOC)){  
       ?>
+         <?php 
+            if ($fetch_content['playlist_id'] == '5bVvlbRyTkOiZwDTZbBQ'){
+         ?>
+      <a href="watch_video_copy.php?get_id=<?= $fetch_content['id']; ?>" class="box">
+         <i class="fas fa-play"></i>
+         <img src="uploaded_files/<?= $fetch_content['thumb']; ?>" alt="">
+         <h3><?= $fetch_content['title']; ?></h3>
+      </a>
+         <?php
+            } else {
+         ?>
       <a href="watch_video.php?get_id=<?= $fetch_content['id']; ?>" class="box">
          <i class="fas fa-play"></i>
          <img src="uploaded_files/<?= $fetch_content['thumb']; ?>" alt="">
          <h3><?= $fetch_content['title']; ?></h3>
       </a>
+         <?php
+            }
+         ?>
       <?php
             }
          }else{
@@ -1780,7 +1794,7 @@ section{
 
 
 
-<?php include 'components/footer.php'; ?>
+<?php //include 'components/footer.php'; //?>
 
 <!-- custom js file link  -->
 <script src="js/script.js"></script>

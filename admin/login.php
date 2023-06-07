@@ -12,6 +12,10 @@ if(isset($_POST['submit'])){
    $select_tutor = $conn->prepare("SELECT * FROM `tutors` WHERE email = ? AND password = ? AND status = 'Active' LIMIT 1");
    $select_tutor->execute([$email, $pass]);
    $row = $select_tutor->fetch(PDO::FETCH_ASSOC);
+
+   $select_tutor1 = $conn->prepare("SELECT * FROM `tutors` WHERE email = ? AND password = ? AND status = 'Inactive' LIMIT 1");
+   $select_tutor1->execute([$email, $pass]);
+   $row1 = $select_tutor1->fetch(PDO::FETCH_ASSOC);
    
    if($select_tutor->rowCount() > 0){
      setcookie('tutor_id', $row['id'], time() + 60*60*24*30, '/');
@@ -19,6 +23,8 @@ if(isset($_POST['submit'])){
      $insert_act = $conn->prepare("INSERT INTO `loginactivity` (`user_id`, `time`) VALUES (?,?)");
      $insert_act->execute([$email, $timeactivity]);
      header('location:dashboard.php');
+   }else if($select_tutor1->rowCount() > 0){
+      $message[] = 'Looks like your account has been deactivated! Kindly email our website for concerns at "inquiries@hrmbsi.com.ph".';
    }else{
       $message[] = 'Incorrect email or password!';
    }

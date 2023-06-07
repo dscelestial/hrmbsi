@@ -42,6 +42,22 @@ if(isset($_POST['submit'])){
       }
    }
 
+   $contact = $_POST['contact'];
+   $contact = filter_var($contact, FILTER_SANITIZE_STRING);
+
+   if(!empty($contact)){
+      $select_contact = $conn->prepare("SELECT contact FROM `users` WHERE email = ?");
+      $select_contact->execute([$contact]);
+      if($select_contact->rowCount() > 0){
+         $message[] = 'Contact Number already taken!';
+      }else{
+         $update_contact = $conn->prepare("UPDATE `users` SET contact = ? WHERE id = ?");
+         $update_contact->execute([$contact, $user_id]);
+         $message[] = 'Contact Number updated successfully!';
+      }
+   }
+
+
    $image = $_FILES['image']['name'];
    $image = filter_var($image, FILTER_SANITIZE_STRING);
    $ext = pathinfo($image, PATHINFO_EXTENSION);
@@ -1723,6 +1739,8 @@ section{
             <input type="text" name="name" placeholder="<?= $fetch_profile['name']; ?>" maxlength="100" class="box">
             <p>Email </p>
             <input type="email" name="email" placeholder="<?= $fetch_profile['email']; ?>" maxlength="100" class="box">
+            <p>Contact Number </p>
+            <input type="text" name="contact" placeholder="<?= $fetch_profile['contact']; ?>" minlength="11" maxlength="11" title="Contact number must contain 11 characters" class="box">
             <p>Update Photo </p>
             <input type="file" name="image" accept="image/*" class="box">
          </div>
@@ -1773,7 +1791,7 @@ section{
         //});
 </script>
 
-<?php include 'components/footer.php'; ?>
+<?php //include 'components/footer.php'; //?>
 
 <!-- custom js file link  -->
 <script src="js/script.js"></script>

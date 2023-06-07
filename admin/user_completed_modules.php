@@ -9,31 +9,21 @@ if(isset($_COOKIE['tutor_id'])){
    header('location:login.php');
 }
 
-if(isset($_POST['delete_video'])){
-   $delete_id = $_POST['video_id'];
+if(isset($_POST['delete'])){
+   $delete_id = $_POST['id'];
    $delete_id = filter_var($delete_id, FILTER_SANITIZE_STRING);
-   $verify_video = $conn->prepare("SELECT * FROM `content` WHERE id = ? LIMIT 1");
-   $verify_video->execute([$delete_id]);
-   if($verify_video->rowCount() > 0){
-      $delete_video_thumb = $conn->prepare("SELECT * FROM `content` WHERE id = ? LIMIT 1");
-      $delete_video_thumb->execute([$delete_id]);
-      $fetch_thumb = $delete_video_thumb->fetch(PDO::FETCH_ASSOC);
-      unlink('../uploaded_files/'.$fetch_thumb['thumb']);
-      $delete_video = $conn->prepare("SELECT * FROM `content` WHERE id = ? LIMIT 1");
-      $delete_video->execute([$delete_id]);
-      $fetch_video = $delete_video->fetch(PDO::FETCH_ASSOC);
-      //unlink('../uploaded_files/'.$fetch_video['video']);
-      $delete_likes = $conn->prepare("DELETE FROM `likes` WHERE content_id = ?");
-      $delete_likes->execute([$delete_id]);
-      $delete_comments = $conn->prepare("DELETE FROM `comments` WHERE content_id = ?");
-      $delete_comments->execute([$delete_id]);
-      $delete_content = $conn->prepare("DELETE FROM `content` WHERE id = ?");
-      $delete_content->execute([$delete_id]);
-      $message[] = 'Video deleted!';
-   }else{
-      $message[] = 'Video already deleted!';
-   }
 
+   $verify_playlist = $conn->prepare("SELECT * FROM `users` WHERE id = ? LIMIT 1");
+   $verify_playlist->execute([$delete_id]);
+
+   if($verify_playlist->rowCount() > 0){
+
+   $delete_user = $conn->prepare("DELETE FROM `users` WHERE id = ?");
+   $delete_user->execute([$delete_id]);
+   $message[] = 'User deleted!';
+   }else{
+      $message[] = 'User already deleted!';  
+   }
 }
 
 ?>
@@ -44,7 +34,7 @@ if(isset($_POST['delete_video'])){
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>HRMBSi | Contents</title>
+   <title>HRMBSi | Users</title>
    <link rel="icon" href="../images/hrmbsi icon.png">
 
    <!-- font awesome cdn link  -->
@@ -1162,56 +1152,49 @@ section{
 }
 </style>
 
-
 </head>
 <body>
 
 <?php include '../components/admin_header.php'; ?>
-   
-<section class="contents">
 
-   <h1 class="heading">Your Contents</h1>
+<section class="comments">
 
-   <div class="box-container">
-
+   <h1 class="heading">Users Module Completion Log
    <div class="box" style="text-align: center;">
-      <h3 class="title" style="margin-bottom: .5rem;">Create New Content</h3>
-      <a href="add_content.php" class="btn"><i class="fas fa-plus"></i> Add Content</a>
-   </div>
+         <a href="users.php" class="inline-btn"><i class="fas fa-users"></i> Users</a>
+   </div></h1>  
+   </h1>
 
-   <?php
-      $select_videos = $conn->prepare("SELECT * FROM `content` WHERE tutor_id = ? ORDER BY date DESC");
-      $select_videos->execute([$tutor_id]);
-      if($select_videos->rowCount() > 0){
-         while($fecth_videos = $select_videos->fetch(PDO::FETCH_ASSOC)){ 
-            $video_id = $fecth_videos['id'];
-   ?>
+   <div class="show-comments">
+      <?php
+         $select_completed = $conn->prepare("SELECT c.*, cc.*, u.* FROM `content` AS C JOIN `content_completion` AS cc ON c.id = cc.content_id JOIN `users` AS u ON cc.user_id = u.id ORDER BY cc.date DESC");
+         $select_completed->execute();
+         if($select_completed->rowCount() > 0){
+            while($fetch_completed = $select_completed->fetch(PDO::FETCH_ASSOC)){   
+      ?>
       <div class="box">
-         <div class="flex">
-            <div><i class="fas fa-dot-circle" style="<?php if($fecth_videos['status'] == 'Active'){echo 'color:limegreen'; }else{echo 'color:red';} ?>"></i><span style="<?php if($fecth_videos['status'] == 'Active'){echo 'color:limegreen'; }else{echo 'color:red';} ?>"><?= $fecth_videos['status']; ?></span></div>
-            <div><i class="fas fa-calendar"></i><span><?= $fecth_videos['date']; ?></span></div>
+         <div class="user">
+            <img src="../uploaded_files/<?= $fetch_completed['image']; ?>" alt="">
+            <div>
+               <h3><?= $fetch_completed['name']; ?>: <?= $fetch_completed['title']; ?></h3>
+               <span>Date Completed: <?= $fetch_completed['date']; ?></span>
+            </div>
          </div>
-         <img src="../uploaded_files/<?= $fecth_videos['thumb']; ?>" class="thumb" alt="">
-         <h3 class="title"><?= $fecth_videos['title']; ?></h3>
+         <!--<p class="text"><?= $fetch_completed['date']; ?></p>
          <form action="" method="post" class="flex-btn">
-            <input type="hidden" name="video_id" value="<?= $video_id; ?>">
-            <a href="update_content.php?get_id=<?= $video_id; ?>" class="option-btn"><i class="fas fa-pen"></i> Update</a>
-            <input type="submit" value="delete" class="delete-btn" onclick="return confirm('Delete this video?');" name="delete_video">
-         </form>
-         <a href="view_content.php?get_id=<?= $video_id; ?>" class="btn"><i class="fas fa-eye"></i> View content</a>
+            <input type="hidden" name="comment_id" value="<?= $fetch_completed['date']; ?>">
+            <button type="submit" name="delete_comment" class="inline-delete-btn" onclick="return confirm('Delete this comment?');">Delete Comment</button>
+         </form>-->
       </div>
-   <?php
-         }
+      <?php
+       }
       }else{
-         echo '<p class="empty">No contents added yet!</p>';
+         echo '<p class="empty">No users completed the module yet!</p>';
       }
-   ?>
-
-   </div>
-
+      ?>
+      </div>
+   
 </section>
-
-
 
 
 
@@ -1228,6 +1211,12 @@ section{
 <?php //include '../components/footer.php'; //?>
 
 <script src="../js/admin_script.js"></script>
+
+<script>
+   document.querySelectorAll('.playlists .box-container .box .description').forEach(content => {
+      if(content.innerHTML.length > 100) content.innerHTML = content.innerHTML.slice(0, 100);
+   });
+</script>
 
 </body>
 </html>

@@ -9,21 +9,53 @@ if(isset($_COOKIE['user_id'])){
    header('location:login.php');
 }
 
-if(isset($_POST['delete_comment'])){
+require "vendor/autoload.php";
 
-   $delete_id = $_POST['id'];
-   $delete_id = filter_var($delete_id, FILTER_SANITIZE_STRING);
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
-   $verify_comment = $conn->prepare("SELECT * FROM `contact` WHERE id = ?");
-   $verify_comment->execute([$delete_id]);
+if(isset($_POST['submit'])){
 
-   if($verify_comment->rowCount() > 0){
-      $delete_comment = $conn->prepare("DELETE FROM `contact` WHERE id = ?");
-      $delete_comment->execute([$delete_id]);
-      $message[] = 'Message deleted successfully!';
-   }else{
-      $message[] = 'Message already deleted!';
-   }
+   $phpmailer = new PHPMailer(true);
+
+   $subject = "HRMBSI Feedback";
+   $gmail = "inquiries@hrmbsi.com.ph";
+   $hname = "HRMBSI";
+   $hnumber = "8-663-0077";
+
+   $phpmailer->isSMTP();
+   $phpmailer->SMTPAuth = true;
+    
+   $phpmailer->Host = "sandbox.smtp.mailtrap.io";
+   $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+   $phpmailer->Port = 2525;
+
+   $phpmailer->Username = '1969a7779d071c';
+   $phpmailer->Password = '476aaaaf064ce1';
+
+   $id = $_POST['id'];
+   $id = filter_var($id, FILTER_SANITIZE_STRING);
+   $name = $_POST['name'];
+   $name = filter_var($name, FILTER_SANITIZE_STRING);
+   $email = $_POST['email'];
+   $email = filter_var($email, FILTER_SANITIZE_STRING);
+   $msg = $_POST['msg'];
+   $msg = filter_var($msg, FILTER_SANITIZE_STRING);
+   $timeactivity = date("F j, Y, g:i a");
+
+   $messages = "You have received a message from: $name, Email: $email, Message: $msg";
+
+         $insert_user = $conn->prepare("INSERT INTO `reply`(id, user_id, name, email, message, date) VALUES(?,?,?,?,?,?)");
+         $insert_user->execute([$id, $user_id, $name, $email, $msg, $timeactivity]);
+
+         $phpmailer->setFrom($email,$name);
+         $phpmailer->addAddress($gmail);
+      
+         $phpmailer->Subject = $subject;
+         $phpmailer->Body = $messages;
+      
+         $phpmailer->send();
+         $message[] = 'Message sent successfully!';
 
 }
 
@@ -1063,6 +1095,31 @@ section{
    color: var(--main-color);
 }
 
+.edit-comment form{
+   background-color: var(--white);
+   border-radius: .5rem;
+   padding: 2rem;
+}
+
+.edit-comment form .box{
+   width: 100%;
+   border-radius: .5rem;
+   padding: 1.4rem;
+   font-size: 1.8rem;
+   color: var(--black);
+   background-color: var(--light-bg);
+   resize: none;
+   height: 20rem;
+}
+
+.edit-comment form .flex{
+   display: flex;
+   gap: 1.5rem;
+   justify-content: space-between;
+   margin-top: .5rem;
+}
+
+
 
 @media (max-width:1200px){
 
@@ -1158,7 +1215,48 @@ section{
 <body>
 
 <?php include 'components/user_header.php'; ?>
-   
+
+<?php
+   if(isset($_POST['reply'])){
+      $reply_id = $_POST['id'];
+      $reply_id = filter_var($reply_id, FILTER_SANITIZE_STRING);
+      $verify_contact = $conn->prepare("SELECT * FROM `contact` WHERE id = ? LIMIT 1");
+      $verify_contact->execute([$reply_id]);
+      if($verify_contact->rowCount() > 0){
+         $fetch_reply_contact = $verify_contact->fetch(PDO::FETCH_ASSOC);
+      
+      $select_user = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+      $select_user->execute([$user_id]);
+      $fetch_user = $select_user->fetch(PDO::FETCH_ASSOC);
+         $id = $fetch_user['id'];
+         $name = $fetch_user['name'];
+         $email = $fetch_user['email'];
+?>
+<section class="edit-comment">
+   <h1 class="heading">Reply</h1>
+   <form action="" method="post">
+      <!--<p>User ID <span>*</span></p>-->
+      <input type="text" name="id" value="<?= $fetch_reply_contact['id']; ?>" hidden>
+      <!--<p>Name <span>*</span></p>-->
+      <input type="text" name="name" value="<?= $fetch_user['name']; ?>" required class="box" readonly hidden>
+      <!--<p>Email <span>*</span></p>-->
+      <input type="text" name="email" value="<?= $fetch_user['email']; ?>" required class="box" readonly hidden>
+      <p>Message <span>*</span></p>
+      <textarea readonly class="box" cols="30" rows="10"><?= $fetch_reply_contact['message']; ?></textarea>
+      <p>Reply <span>*</span></p>
+      <textarea name="msg" class="box" maxlength="5000" required placeholder="Please enter your Reply" cols="30" rows="10"></textarea>
+      <div class="flex">
+         <a href="user_messages.php" class="inline-btn">Cancel</a>
+         <input type="submit" value="Send Reply" name="submit" class="inline-option-btn">
+      </div>
+   </form>
+</section>
+<?php
+   }else{
+      $message[] = 'Feedback was not found!';
+   }
+}
+?>
 
 <section class="comments">
 
@@ -1167,7 +1265,7 @@ section{
    
    <div class="show-comments">
       <?php
-         $select_messages = $conn->prepare("SELECT * FROM `contact` ORDER BY id DESC");
+         $select_messages = $conn->prepare("SELECT * FROM `contact` ORDER BY DATE DESC");
          $select_messages->execute();
          if($select_messages->rowCount() > 0){
             while($fetch_messages = $select_messages->fetch(PDO::FETCH_ASSOC)){
@@ -1180,8 +1278,13 @@ section{
                 $date = $fetch_messages['date'];
       ?>
       <div class="box" style="<?php if($fetch_messages['name'] == $name){echo 'order:-1;';} ?>">
-         <div class="content"><span><?= $fetch_messages['name']; ?></span><span> - <?= $fetch_messages['email']; ?>: </span><span style="font-size: 12px;"><?= $fetch_messages['date']; ?> - </span><a href="reply.php?get_id=<?= $fetch_messages['id']; ?>"> Reply</a></div>
+         <div class="content"><span><?= $fetch_messages['name']; ?></span><span> - <?= $fetch_messages['email']; ?>: </span><span style="font-size: 12px;"><?= $fetch_messages['date']; ?></span></div>
          <p class="text"><?= $fetch_messages['message']; ?></p>
+         <form action="" method="post">
+            <input type="hidden" name="id" value="<?= $fetch_messages['id']; ?>">
+            <button type="submit" name="reply" class="inline-option-btn">Reply</button>
+         </form>
+         <br>
          <?php
          $select_replies = $conn->prepare("SELECT * FROM `reply` WHERE id = '$id' ORDER BY id DESC");
          $select_replies->execute();
@@ -1194,10 +1297,13 @@ section{
                 $message = $fetch_replies['message'];
                 $date = $fetch_replies['date'];
       ?>
-
       <div class="box" style="<?php if($fetch_replies['name'] == $name){echo 'order:-1;';} ?>" >
-         <div class="content"><span><?= $fetch_replies['name']; ?></span><span> - <?= $fetch_replies['email']; ?>: </span><span style="font-size: 12px;"><?= $fetch_replies['date']; ?> - </span><a href="reply.php?get_id=<?= $fetch_replies['id']; ?>"> Reply</a></div>
+         <div class="content"><span><?= $fetch_replies['name']; ?></span><span> - <?= $fetch_replies['email']; ?>: </span><span style="font-size: 12px;"><?= $fetch_replies['date']; ?></span></div>
          <p class="text" style=" width: 50%;"><?= $fetch_replies['message']; ?></p>
+         <!--<form action="" method="post">
+            <input type="hidden" name="id" value="<?= $fetch_comment['id']; ?>">
+            <button type="submit" name="reply" class="inline-option-btn">Reply</button>
+         </form>-->
       </div>
       <?php
          }

@@ -19,6 +19,10 @@ if(isset($_POST['submit'])){
    $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ? AND status = 'Active' LIMIT 1");
    $select_user->execute([$email, $pass]);
    $row = $select_user->fetch(PDO::FETCH_ASSOC);
+
+   $select_user1 = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ? AND status = 'Inactive' LIMIT 1");
+   $select_user1->execute([$email, $pass]);
+   $row1 = $select_user1->fetch(PDO::FETCH_ASSOC);
    
    if($select_user->rowCount() > 0){
      setcookie('user_id', $row['id'], time() + 60*60*24*30, '/');
@@ -26,6 +30,8 @@ if(isset($_POST['submit'])){
      $insert_act = $conn->prepare("INSERT INTO `loginactivity` (`user_id`, `time`) VALUES (?,?)");
      $insert_act->execute([$email, $timeactivity]);
      header('location:home.php');
+   }else if($select_user1->rowCount() > 0){
+      $message[] = 'Your account has been deactivated! Register and participate to our upcoming events to get your account re-activated.';   
    }else{
       $message[] = 'Incorrect email or password!';
    }

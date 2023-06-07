@@ -32,8 +32,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '313f38c4bad511';
+   $phpmailer->Password = '2c18d304bdd4cf';
 
    $subject = "HRMBSI DLP";
    $gmail = "inquiries@hrmbsi.com.ph";

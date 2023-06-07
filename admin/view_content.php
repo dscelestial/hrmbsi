@@ -29,7 +29,7 @@ if(isset($_POST['delete_video'])){
    $delete_video = $conn->prepare("SELECT video FROM `content` WHERE id = ? LIMIT 1");
    $delete_video->execute([$delete_id]);
    $fetch_video = $delete_video->fetch(PDO::FETCH_ASSOC);
-   unlink('../uploaded_files/'.$fetch_video['video']);
+   //unlink('../uploaded_files/'.$fetch_video['video']);
 
    $delete_likes = $conn->prepare("DELETE FROM `likes` WHERE content_id = ?");
    $delete_likes->execute([$delete_id]);
@@ -1096,6 +1096,17 @@ section{
    color: var(--main-color);
 }
 
+/*#overlay {
+   position: absolute;
+    top: 81%;
+    left: 0;
+    height: 2%;
+    width: 100%;
+    background-color: black;
+    z-index: 1;
+    opacity: 0.9;
+}*/
+
 
 @media (max-width:1200px){
 
@@ -1212,6 +1223,10 @@ section{
    ?>
    <div class="container">
       <iframe src="<?= $fetch_content['link']; ?>" autoplay controls poster="../uploaded_files/<?= $fetch_content['thumb']; ?>" class="video"></iframe>
+      <!--<div id="overlay"></div>-->
+      <form action="" method="post">
+      <button onclick = "stopVideo(body)" class="inline-delete-btn"> Stop Video </button>
+      </form>
       <div class="date"><i class="fas fa-calendar"></i><span><?= $fetch_content['date']; ?></span></div>
       <h3 class="title"><?= $fetch_content['title']; ?></h3>
       <div class="flex">
@@ -1239,7 +1254,7 @@ section{
 
 <section class="comments">
 
-   <h1 class="heading">user comments</h1>
+   <h1 class="heading">User comments</h1>
 
    
    <div class="show-comments">
@@ -1276,6 +1291,41 @@ section{
    
 </section>
 
+<section class="comments">
+
+   <h1 class="heading">Users Completed the Module</h1>
+
+   
+   <div class="show-comments">
+      <?php
+         $select_completed = $conn->prepare("SELECT c.*, cc.*, u.* FROM `content_copy` AS C JOIN `content_completion` AS cc ON c.id = cc.content_id JOIN `users` AS u ON cc.user_id = u.id WHERE cc.content_id = ?");
+         $select_completed->execute([$get_id]);
+         if($select_completed->rowCount() > 0){
+            while($fetch_completed = $select_completed->fetch(PDO::FETCH_ASSOC)){   
+      ?>
+      <div class="box">
+         <div class="user">
+            <img src="../uploaded_files/<?= $fetch_completed['image']; ?>" alt="">
+            <div>
+               <h3><?= $fetch_completed['name']; ?></h3>
+               <span>Date Completed: <?= $fetch_completed['date']; ?></span>
+            </div>
+         </div>
+         <!--<p class="text"><?= $fetch_completed['date']; ?></p>
+         <form action="" method="post" class="flex-btn">
+            <input type="hidden" name="comment_id" value="<?= $fetch_completed['date']; ?>">
+            <button type="submit" name="delete_comment" class="inline-delete-btn" onclick="return confirm('Delete this comment?');">Delete Comment</button>
+         </form>-->
+      </div>
+      <?php
+       }
+      }else{
+         echo '<p class="empty">No users completed the module yet!</p>';
+      }
+      ?>
+      </div>
+   
+</section>
 
 
 
@@ -1285,6 +1335,21 @@ section{
 
 
 
+
+<script>
+      // to stop the video
+      function stopVideo(element) {
+         // getting every iframe from the body
+         var iframes = element.querySelectorAll('iframe');
+         // reinitializing the values of the src attribute of every iframe to stop the YouTube video.
+         for (let i = 0; i < iframes.length; i++) {
+            if (iframes[i] !== null) {
+               var temp = iframes[i].src;
+               iframes[i].src = temp;
+            }
+         }
+      };
+</script>
 
 
 <?php //include '../components/footer.php'; //?>

@@ -1708,7 +1708,7 @@ section{
 
 <section class="playlists">
 
-   <h1 class="heading">Upcoming Events</h1>
+   <h1 class="heading">Upcoming Seminar</h1>
 
    <div class="box-container">
 
@@ -1719,7 +1719,7 @@ section{
             while($rowzoom = $select_zoom->fetch(PDO::FETCH_ASSOC)){  
       ?>
       <div class="box">
-        <div><i class="fas fa-circle-dot" style="<?php if($rowzoom['status'] == 'Active'){echo 'color:limegreen'; }else{echo 'color:red';} ?>"></i> <span style="<?php if($rowzoom['status'] == 'Active'){echo 'color:limegreen'; }else{echo 'color:red';} ?>"><?= $rowzoom['status']; ?></span></div>
+        <!--<div><i class="fas fa-circle-dot" style="<?php if($rowzoom['status'] == 'Active'){echo 'color:limegreen'; }else{echo 'color:red';} ?>"></i> <span style="<?php if($rowzoom['status'] == 'Active'){echo 'color:limegreen'; }else{echo 'color:red';} ?>"><?= $rowzoom['status']; ?></span></div>-->
          <h3 class="title"><?= $rowzoom['title']; ?></h3>
          <p class="start">Start Session: <?= $rowzoom['start']; ?></p>
          <p class="end">End Session: <?= $rowzoom['end']; ?></p>

@@ -18,7 +18,7 @@ if(isset($_POST['submit'])){
    $phpmailer = new PHPMailer(true);
 
    $subject = "HRMBSI Feedback";
-   $gmail = 'hrmbsi@gmail.com';
+   $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
 
@@ -29,8 +29,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '313f38c4bad511';
+   $phpmailer->Password = '2c18d304bdd4cf';
 
    $id = unique_id();
    $user_id = $_POST['user_id']; 
@@ -41,6 +41,8 @@ if(isset($_POST['submit'])){
    $email = filter_var($email, FILTER_SANITIZE_STRING);
    $number = $_POST['number']; 
    $number = filter_var($number, FILTER_SANITIZE_STRING);
+   $event_title = $_POST['event_title']; 
+   $event_title = filter_var($event_title, FILTER_SANITIZE_STRING);
    $msg = $_POST['msg']; 
    $msg = filter_var($msg, FILTER_SANITIZE_STRING);
    $timeactivity = date("F j, Y, g:i a");
@@ -49,14 +51,14 @@ if(isset($_POST['submit'])){
 
    $messages = "You have received a message from: $name, Email: $email, Message: $msg";
 
-   $select_contact = $conn->prepare("SELECT * FROM `contact` WHERE id = ? AND user_id = ? AND name = ? AND email = ? AND number = ? AND message = ?");
-   $select_contact->execute([$id, $user_id, $name, $email, $number, $msg]);
+   $select_contact = $conn->prepare("SELECT * FROM `contact` WHERE user_id = ? AND name = ? AND email = ? AND number = ? AND event_title = ? AND message = ?");
+   $select_contact->execute([$user_id, $name, $email, $number, $event_title, $msg]);
 
    if($select_contact->rowCount() > 0){
       $message[] = 'Message sent already!';
    }else{
-      $insert_message = $conn->prepare("INSERT INTO `contact`(id, user_id, name, email, number, message, date, status) VALUES(?,?,?,?,?,?,?,?)");
-      $insert_message->execute([$id, $user_id, $name, $email, $number, $msg, $timeactivity, $status]);
+      $insert_message = $conn->prepare("INSERT INTO `contact`(id, user_id, name, email, number, event_title, message, date, status) VALUES(?,?,?,?,?,?,?,?,?)");
+      $insert_message->execute([$id, $user_id, $name, $email, $number, $event_title, $msg, $timeactivity, $status]);
 
       $phpmailer->setFrom($email,$name);
       $phpmailer->addAddress($gmail);
@@ -1707,14 +1709,17 @@ section{
             if($select_profile->rowCount() > 0){
             $fetch_user = $select_profile->fetch(PDO::FETCH_ASSOC);
             $id = $fetch_user['id'];
+            $event_title = $fetch_user['event_title'];
             $name = $fetch_user['name'];
             $email = $fetch_user['email'];
+            $contact = $fetch_user['contact'];
          ?>
          <h3>Contact Our Service</h3>
          <input type="text" value="<?= $fetch_user['id']; ?>" required maxlength="100" name="user_id" class="box" readonly hidden>
          <input type="text" value="<?= $fetch_user['name']; ?>" required maxlength="100" name="name" class="box" readonly hidden>
          <input type="email" value="<?= $fetch_user['email']; ?>" required maxlength="100" name="email" class="box" readonly hidden>
-         <input type="number" min="0" max="9999999999" placeholder="Enter your number" required maxlength="11" name="number" class="box">
+         <input type="text" value="<?= $fetch_user['contact']; ?>" name="number" class="box" readonly hidden>
+         <input type="text" value="<?= $fetch_user['event_title']; ?>" name="event_title" class="box" readonly hidden>
          <textarea name="msg" class="box" placeholder="Enter your message" required cols="30" rows="10" maxlength="1000"></textarea>
         <p hidden>Status <span>*</span></p>
             <select name="status" class="box" hidden required>

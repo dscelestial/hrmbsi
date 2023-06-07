@@ -32,8 +32,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '313f38c4bad511';
+   $phpmailer->Password = '2c18d304bdd4cf';
 
    $subject = "HRMBSI DLP";
    $gmail = "inquiries@hrmbsi.com.ph";
@@ -51,15 +51,22 @@ if(isset($_POST['submit'])){
    $font = '../components/inc/16304_GARA.ttf';
    $image = imagecreatefrompng("../images/ecert.png"); // template ng cert
    $color = imagecolorallocate($image, 19, 21, 22);
-   if (strlen($name) < 15){
-   imagettftext($image, 25, 0, 180, 305, $color, $font, $name);// Name sa gitna ng Cert
+   $center_name = (imagesx($image)/2) - (15*(strlen($name)/2));
+   $center_title = (imagesx($image)/2) - (15*(strlen($event_title)/2));
+
+   imagettftext($image, 25, 0, $center_name, 305, $color, $font, $name);// Name sa gitna ng Cert
+   imagettftext($image, 25, 0, $center_title, 385, $color, $font, $event_title);// Event Title sa gitna ng Cert
    $date = date('M-d-Y');
-   imagettftext($image, 10, 0, 225, 435, $color, $font, $date); // Date
-   } else {
-   imagettftext($image, 25, 0, 105, 305, $color, $font, $name);// Name sa gitna ng Cert
-   $date = date('M-d-Y');
-   imagettftext($image, 10, 0, 220, 435, $color, $font, $date); // Date   
-   }
+   imagettftext($image, 15, 0, 200, 435, $color, $font, $date); // Date
+   //if (strlen($name) < 15){
+   //imagettftext($image, 25, 0, 180, 305, $color, $font, $name);// Name sa gitna ng Cert
+   //$date = date('M-d-Y');
+   //imagettftext($image, 10, 0, 225, 435, $color, $font, $date); // Date
+   //} else {
+   //imagettftext($image, 25, 0, 105, 305, $color, $font, $name);// Name sa gitna ng Cert
+   //$date = date('M-d-Y');
+   //imagettftext($image, 10, 0, 220, 435, $color, $font, $date); // Date   
+   //}
    $file = $name;
    $time = time();
 

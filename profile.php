@@ -1686,7 +1686,7 @@ section{
                   <span>Saved Playlists</span>
                </div>
             </div>
-            <a href="courses.php" class="inline-btn"><i class="fas fa-eye"></i> View Playlists</a>
+            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Playlists</a>
          </div>
 
          <div class="box">
@@ -1697,7 +1697,7 @@ section{
                   <span>Liked Tutorials</span>
                </div>
             </div>
-            <a href="courses.php" class="inline-btn"><i class="fas fa-eye"></i> View Liked</a>
+            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Liked</a>
          </div>
 
          <div class="box">
@@ -1708,7 +1708,7 @@ section{
                   <span>Video Comments</span>
                </div>
             </div>
-            <a href="courses.php" class="inline-btn"><i class="fas fa-eye"></i> View Comments</a>
+            <a href="#" class="inline-btn"><i class="fas fa-eye"></i> View Comments</a>
          </div>
       </div>
    </div>

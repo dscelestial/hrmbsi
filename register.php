@@ -29,8 +29,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '313f38c4bad511';
+   $phpmailer->Password = '2c18d304bdd4cf';
 
 
    $id = unique_id();
@@ -44,6 +44,8 @@ if(isset($_POST['submit'])){
    $organization = filter_var($organization, FILTER_SANITIZE_STRING);
    $address = $_POST['address'];
    $address = filter_var($address, FILTER_SANITIZE_STRING);
+   $contact = $_POST['contact'];
+   $contact = filter_var($contact, FILTER_SANITIZE_STRING);
    $attendees = $_POST['attendees'];
    $attendees = filter_var($attendees, FILTER_SANITIZE_STRING);
    $source = $_POST['source'];
@@ -79,10 +81,10 @@ if(isset($_POST['submit'])){
       $message[] = 'Email already taken!';
    }else{
       if($pass != $cpass){
-         $message[] = 'Confirm passowrd not matched!';
+         $message[] = 'Confirm password not matched!';
       }else{
-         $insert_user = $conn->prepare("INSERT INTO `users`(id, event_title, name, organization, address, email, password, attendees, source, sector, image, status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
-         $insert_user->execute([$id, $event_title, $name, $organization, $address, $email, $cpass, $attendees, $source, $sector, $rename, $status]);
+         $insert_user = $conn->prepare("INSERT INTO `users`(id, event_title, name, organization, address, contact, email, password, attendees, source, sector, image, status) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+         $insert_user->execute([$id, $event_title, $name, $organization, $address, $contact, $email, $cpass, $attendees, $source, $sector, $rename, $status]);
          move_uploaded_file($image_tmp_name, $image_folder);
          
          $verify_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ? LIMIT 1");
@@ -1814,6 +1816,8 @@ section{
             <label for="sector" style="font-size: 15px;"> Other</label><br>
          </div>
       </div>
+      <p>Contact Number <span>*</span></p>
+            <input type="text" name="contact" placeholder="Enter your contact number" minlength="11" maxlength="11" title="Contact number must contain 11 characters" required class="box">
       <p>Select Photo <span>*</span></p>
       <input type="file" name="image" accept="image/*" required class="box">
       <p hidden>Status <span>*</span></p>

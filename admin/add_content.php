@@ -1223,7 +1223,7 @@ section{
       <input type="file" name="thumb" accept="image/*" required class="box">
       <p hidden>Select video <span>*</span></p>
       <input type="file" name="video" accept="video/*" class="box" hidden>
-      <input type="submit" value="upload video" name="submit" class="btn">
+      <input type="submit" value="Add Content" name="submit" class="btn">
    </form>
 
 </section>

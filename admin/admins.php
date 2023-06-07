@@ -1163,7 +1163,7 @@ section{
    <h1 class="heading">Users 
    <div class="box" style="text-align: center;">
          <a href="add_admin.php" class="inline-btn"><i class="fas fa-plus"></i> Add Administrator</a>
-         <a href="admins.php" class="inline-btn"><i class="fas fa-users"></i> Administrators</a>
+         <a href="users.php" class="inline-btn"><i class="fas fa-users"></i> Users</a>
    </div></h1>
    <div class="box-container">
 
