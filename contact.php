@@ -29,8 +29,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '313f38c4bad511';
-   $phpmailer->Password = '2c18d304bdd4cf';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
    $id = unique_id();
    $user_id = $_POST['user_id']; 
@@ -49,7 +49,14 @@ if(isset($_POST['submit'])){
    $status = $_POST['status']; 
    $status = filter_var($status, FILTER_SANITIZE_STRING);
 
-   $messages = "You have received a message from: $name, Email: $email, Message: $msg";
+   $GLOBAL = "You have received a message fromsssss: $name, Email: $email, Message: $msg";
+   
+
+   $phpmailer->isHTML(true);
+   $phpmailer->Subject = 'HTML Email Example';
+   $email_temp = 'e_contact.php';
+   $phpmailer->Body = file_get_contents($email_temp);
+   $msg2 = file_get_contents($email_temp);
 
    $select_contact = $conn->prepare("SELECT * FROM `contact` WHERE user_id = ? AND name = ? AND email = ? AND number = ? AND event_title = ? AND message = ?");
    $select_contact->execute([$user_id, $name, $email, $number, $event_title, $msg]);
@@ -64,7 +71,31 @@ if(isset($_POST['submit'])){
       $phpmailer->addAddress($gmail);
       
       $phpmailer->Subject = $subject;
-      $phpmailer->Body = $messages;
+      $phpmailer->Body = 
+      '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Feedback</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">You have received a message:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5 text-align: center"><b>From:</b> ' . $name . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>Message: </b>' . $msg . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">This is an automated message. Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Interns</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
       
       $phpmailer->send();
       $message[] = 'Message sent successfully!';
@@ -1714,22 +1745,33 @@ section{
             $email = $fetch_user['email'];
             $contact = $fetch_user['contact'];
          ?>
-         <h3>Contact Our Service</h3>
+         <h3>Remind us that you have answered the Evaluation through our GFORMS to get your Certificate.</h3>
          <input type="text" value="<?= $fetch_user['id']; ?>" required maxlength="100" name="user_id" class="box" readonly hidden>
          <input type="text" value="<?= $fetch_user['name']; ?>" required maxlength="100" name="name" class="box" readonly hidden>
          <input type="email" value="<?= $fetch_user['email']; ?>" required maxlength="100" name="email" class="box" readonly hidden>
          <input type="text" value="<?= $fetch_user['contact']; ?>" name="number" class="box" readonly hidden>
          <input type="text" value="<?= $fetch_user['event_title']; ?>" name="event_title" class="box" readonly hidden>
          <textarea name="msg" class="box" placeholder="Enter your message" required cols="30" rows="10" maxlength="1000"></textarea>
+         <!--<input type="file" name="file" class="box" required>-->
         <p hidden>Status <span>*</span></p>
             <select name="status" class="box" hidden required>
                <!--<option value="" disabled selected>-- select user status</option>
                <option value="Active">Active</option>-->
                <option value="--">--</option>
             </select>
+         
          <input type="submit" value="send message" class="inline-btn" name="submit">
+         <br><br>
+         <!--<h4>Download the Zoom Evaluation Form to give your feedback to us.</h4>
+         <a href="images/hrmbsi icon.png" download>
+            <img src="images/download icon.png" alt="Evaluation Form" width="100" height="100">
+         </a>-->
+         <h4>PLEASE READ: Click the link to be redirected for the Evaluation of the Seminar. Once done evaluating, 
+            make sure to give a feedback message stating "I am done evaluating the Seminar." here in the form.</h4>
+         <h3><a href="http://localhost/hrmbsi/contact.php">Evaluation Link</a></h3>
          <?php } else {
          ?>
+         <h3>Contact our service</h3>
          <input type="text" placeholder = "Enter your ID. If none, leave blank." maxlength="100" name="user_id" class="box">
          <input type="text" placeholder = "Enter your name" required maxlength="100" name="name" class="box">
          <input type="email" placeholder = "Enter your email"required maxlength="100" name="email" class="box">
@@ -1752,7 +1794,8 @@ section{
       <div class="box">
          <i class="fas fa-phone"></i>
          <h3>Phone Number</h3>
-         <a href="https://hrmbsi.com.ph/" style="text-decoration: none;">8-633-0077</a>
+         <a href="https://hrmbsi.com.ph/" style="text-decoration: none;">(02) 8706 - 9949</a>
+         <!--<a href="https://hrmbsi.com.ph/" style="text-decoration: none;">8-633-0077</a>-->
          <!--<a href="https://hrmbsi.com.ph/" style="text-decoration: none;">(+63) 999 - 995 - 1907</a>-->
       </div>
 

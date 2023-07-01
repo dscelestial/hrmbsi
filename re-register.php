@@ -17,7 +17,7 @@ if(isset($_POST['submit'])){
 
    $phpmailer = new PHPMailer(true);
 
-   $subject = "HRMBSI DLP";
+   $subject = "HRMBSI Re-register";
    $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
@@ -29,8 +29,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '313f38c4bad511';
-   $phpmailer->Password = '2c18d304bdd4cf';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
    $id = unique_id();
    $event_title = $_POST['event_title'];
@@ -54,6 +54,12 @@ if(isset($_POST['submit'])){
 
    Regards, $hname.";
   
+   $phpmailer->isHTML(true);
+   $phpmailer->Subject = 'HTML Email Example';
+   $email_temp = 'C:\xampp\htdocs\hrmbsi\e_register.php';
+   $phpmailer->Body = file_get_contents($email_temp);
+   $msg2 = file_get_contents($email_temp);
+
    $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
    $select_user->execute([$email]);
   
@@ -64,11 +70,41 @@ if(isset($_POST['submit'])){
          $insert_user = $conn->prepare("INSERT INTO `registration`(id, event_title, email, organization, attendees, source, sector, date) VALUES(?,?,?,?,?,?,?,?)");
          $insert_user->execute([$id, $event_title, $email, $organization, $attendees, $source, $sector, $date]);
 
+         $update_user_event = $conn->prepare("UPDATE `users` SET event_title = ? WHERE email = ?");
+         $update_user_event->execute([$event_title, $email]);
+
             $phpmailer->setFrom($gmail,$hname);
             $phpmailer->addAddress($email);
       
             $phpmailer->Subject = $subject;
-            $phpmailer->Body = $msg;
+            $phpmailer->Body = 
+            '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Welcome Back!</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Kindly wait for the admin to re-activate your account.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5 text-align: center">Your account details:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>Organization:</b> ' . $organization . ', <b>Email:</b> ' . $email . ', <b>Event:</b> ' . $event_title . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">For the payment,  You can pay through this accounts:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>GCASH: </b>09279941026 <b>BPO: </b>8372-92381-2304</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, feel free to reach out to our support team.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Secretariat</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
       
             $phpmailer->send();
             $message[] = 'Registration complete! Wait for admin to re-activate your account.';

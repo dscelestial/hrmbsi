@@ -18,7 +18,7 @@ if(isset($_POST['submit'])){
 
    $phpmailer = new PHPMailer(true);
 
-   $subject = "HRMBSI DLP";
+   $subject = "HRMBSI Recovery";
    $gmail = "hrmbsi@gmail.com";
    $hname = "HRMBSI";
 
@@ -29,8 +29,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
    $email = $_POST['email'];
    $email = filter_var($email, FILTER_SANITIZE_STRING);
@@ -50,7 +50,30 @@ if(isset($_POST['submit'])){
      $phpmailer->addAddress($email, $name);
          
      $phpmailer->Subject = $subject;
-     $phpmailer->Body = $msg;
+     $phpmailer->Body = 
+     '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+     .'<tr>'
+        .'<div class="tempp">'
+        .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+           .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+        .'</td>'
+        .'</div>'
+     .'</tr>'
+     .'<tr>'
+        .'<td style="padding: 20px; background-color: #ffffff;">'
+        .'<h1 style="font-size: 24px; margin-bottom: 20px;">Recovery</h1>'
+        .'<p style="font-size: 16px; line-height: 1.5;">Hello: ' . $email . '</p>'
+        .'<p style="font-size: 16px; line-height: 1.5;">Your pin is: ' . $pin . '</p>'
+        .'<p style="font-size: 16px; line-height: 1.5;">This is an automated message. Best regards,</p>'
+        .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Interns</p>'
+        .'</td>'
+     .'</tr>'
+     .'<tr>'
+        .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+        .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+        .'</td>'
+     .'</tr>'
+  .'</table>';
          
      $phpmailer->send();
      echo "<script>window.open('pin.php?email=" . $email . "', '_self')</script>";

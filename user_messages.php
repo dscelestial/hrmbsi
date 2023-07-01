@@ -18,7 +18,7 @@ if(isset($_POST['submit'])){
 
    $phpmailer = new PHPMailer(true);
 
-   $subject = "HRMBSI Feedback";
+   $subject = "HRMBSI Reply";
    $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
@@ -30,8 +30,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
    $id = $_POST['id'];
    $id = filter_var($id, FILTER_SANITIZE_STRING);
@@ -42,9 +42,8 @@ if(isset($_POST['submit'])){
    $msg = $_POST['msg'];
    $msg = filter_var($msg, FILTER_SANITIZE_STRING);
    $timeactivity = date("F j, Y, g:i a");
-
-   $messages = "You have received a message from: $name, Email: $email, Message: $msg";
-
+   $phpmailer->isHTML(true);
+   
          $insert_user = $conn->prepare("INSERT INTO `reply`(id, user_id, name, email, message, date) VALUES(?,?,?,?,?,?)");
          $insert_user->execute([$id, $user_id, $name, $email, $msg, $timeactivity]);
 
@@ -52,7 +51,32 @@ if(isset($_POST['submit'])){
          $phpmailer->addAddress($gmail);
       
          $phpmailer->Subject = $subject;
-         $phpmailer->Body = $messages;
+         $phpmailer->Body = 
+         '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Reply</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">You have received a reply:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5 text-align: center"><b>From:</b> ' . $name . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>Message: </b>' . $msg . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">This is an automated message. Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Interns</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
+         
       
          $phpmailer->send();
          $message[] = 'Message sent successfully!';
@@ -1275,11 +1299,19 @@ section{
                 $email = $fetch_messages['email'];
                 $number = $fetch_messages['number'];
                 $message = $fetch_messages['message'];
+                //$file = $fetch_messages['file'];
                 $date = $fetch_messages['date'];
+
+               //  if (!empty($fetch_messages['file'])) { 
+               //    $fileattachment = '<a href="downloadfile1.php?file=' .  $fetch_messages['file'] . '">Download Evaluation</a>';
+               // }else{
+               //    $fileattachment = '<p style="color:red; pointer-events: none;">No File Attached</p>';
+               // }
       ?>
       <div class="box" style="<?php if($fetch_messages['name'] == $name){echo 'order:-1;';} ?>">
          <div class="content"><span><?= $fetch_messages['name']; ?></span><span> - <?= $fetch_messages['email']; ?>: </span><span style="font-size: 12px;"><?= $fetch_messages['date']; ?></span></div>
          <p class="text"><?= $fetch_messages['message']; ?></p>
+         <!--<p class="text"><?= $fileattachment; ?></p>-->
          <form action="" method="post">
             <input type="hidden" name="id" value="<?= $fetch_messages['id']; ?>">
             <button type="submit" name="reply" class="inline-option-btn">Reply</button>
@@ -1339,7 +1371,18 @@ section{
 
 
 
-<?php //include '../components/footer.php'; //?>
+<?php 
+  $select_profile = $conn->prepare("SELECT * FROM `users` WHERE id = ?");
+  $select_profile->execute([$user_id]);
+  if($select_profile->rowCount() > 0){
+  $fetch_profile = $select_profile->fetch(PDO::FETCH_ASSOC);
+  
+  //include 'components/footer.php'; 
+?>
+  
+<?php } else {
+    include 'components/footer.php'; 
+} ?>
 
 <script src="js/admin_script.js"></script>
 

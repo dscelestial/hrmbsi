@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>HRMBSi | Register</title>
+   <link rel="icon" href="images/hrmbsi icon.png">
+
 <?php
 
 include 'components/connect.php';
@@ -17,7 +26,7 @@ if(isset($_POST['submit'])){
 
    $phpmailer = new PHPMailer(true);
 
-   $subject = "HRMBSI DLP";
+   $subject = "HRMBSI Registration";
    $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
@@ -29,8 +38,8 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '313f38c4bad511';
-   $phpmailer->Password = '2c18d304bdd4cf';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
 
    $id = unique_id();
@@ -67,12 +76,11 @@ if(isset($_POST['submit'])){
    $image_tmp_name = $_FILES['image']['tmp_name'];
    $image_folder = 'uploaded_files/'.$rename;
 
-   $msg = "Your account has been created. Kindly wait for the admin to activate your account. For the payment,  You can pay through this accounts GCASH: 09279941026 BPO: 8372-92381-2304
-   Here is the list of your provided details - Name: $name, Organization: $organization, Address: $address, Email: $email, Attendees: $attendees
-   
-   Contact us for more details on our number $hnumber or email us at $gmail
-
-   Regards, $hname.";
+   $phpmailer->isHTML(true);
+   $phpmailer->Subject = 'HTML Email Example';
+   $email_temp = 'C:\xampp\htdocs\hrmbsi\e_register.php';
+   $phpmailer->Body = file_get_contents($email_temp);
+   $msg2 = file_get_contents($email_temp);
 
    $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
    $select_user->execute([$email]);
@@ -92,12 +100,38 @@ if(isset($_POST['submit'])){
          $row = $verify_user->fetch(PDO::FETCH_ASSOC);
          
          if($verify_user->rowCount() > 0){
-            //setcookie('user_id', $row['id'], time() + 60*60*24*30, '/');//
             $phpmailer->setFrom($gmail,$hname);
             $phpmailer->addAddress($email, $name);
          
             $phpmailer->Subject = $subject;
-            $phpmailer->Body = $msg;
+            $phpmailer->Body = 
+            '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Welcome to HRMBSi!</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Your account has been created. Kindly wait for the admin to activate your account.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5 text-align: center">Your account details:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>Name:</b> ' .  $name . ', <b>Organization:</b> ' . $organization . ', <b>Email:</b> ' . $email . ', <b>Event:</b> ' . $event_title . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">For the payment,  You can pay through this accounts:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>GCASH: </b>09279941026 <b>BPO: </b>8372-92381-2304</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, feel free to reach out to our support team.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Secretariat</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
          
             $phpmailer->send();
             $message[] = 'Registration complete! Wait for admin to activate your account.';
@@ -110,14 +144,7 @@ if(isset($_POST['submit'])){
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>HRMBSi | Register</title>
-   <link rel="icon" href="images/hrmbsi icon.png">
+
 
    <!-- password toggle  -->
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
