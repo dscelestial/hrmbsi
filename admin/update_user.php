@@ -32,10 +32,11 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
-   $subject = "HRMBSI DLP";
+   $phpmailer->isHTML(true);
+   $subject = "HRMBSI Account Status";
    $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
@@ -58,20 +59,36 @@ if(isset($_POST['submit'])){
       $link = $row['link'];
       $password = $row['password'];
 
-      $msg = "Hello! $email. Your account has been activated by the administrator. You can now log in to your account - Account Status: $status
-      Zoom Account Details
-      Zoom Link: $link
-      Password: $password
-      
-      Contact us for more details on our number $hnumber or email us at $gmail
-
-      Regards, $hname.";
-
       $phpmailer->setFrom($gmail,$hname);
       $phpmailer->addAddress($email);
 
       $phpmailer->Subject = $subject;
-      $phpmailer->Body = $msg;
+      $phpmailer->Body = 
+      '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Account Status</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Good Day! ' . $email . ' </p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Your account is now <b>' . $status . '</b> </p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Contact us for more details. Number: ' . $hnumber .' or email us at: ' . $gmail . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, feel free to reach out to our support team.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Secretariat</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
 
       $phpmailer->send();
       $message[] = 'User Information updated!';  
@@ -82,18 +99,38 @@ if(isset($_POST['submit'])){
 
       $link = $row['link'];
       $password = $row['password'];
-
-      $msg = "Hello! $email. Your account has been de-activated by the administrator. You can now log in to your account - Account Status: $status
       
-      Contact us for more details on our number $hnumber or email us at $gmail
-
-      Regards, $hname.";
-
+      $phpmailer->isHTML(true);
       $phpmailer->setFrom($gmail,$hname);
       $phpmailer->addAddress($email);
 
       $phpmailer->Subject = $subject;
-      $phpmailer->Body = $msg;
+      $phpmailer->Body =
+      '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Account Status</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Good Day! ' . $email . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Your account is now <b>' . $status . '</b></p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Contact us for more details. Number: ' . $hnumber .' or email us at: ' . $gmail . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, feel free to reach out to our support team.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Secretariat</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
 
       $phpmailer->send();
       $message[] = 'User Information updated!';  

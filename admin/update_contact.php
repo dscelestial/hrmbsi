@@ -32,13 +32,14 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '313f38c4bad511';
-   $phpmailer->Password = '2c18d304bdd4cf';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
-   $subject = "HRMBSI DLP";
+   $subject = "HRMBSI Contact";
    $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
+   $phpmailer->isHTML(true);
 
    $user_id = $_POST['user_id'];
    $user_id = filter_var($user_id, FILTER_SANITIZE_STRING);
@@ -99,7 +100,32 @@ if(isset($_POST['submit'])){
          $phpmailer->addAddress($email, $name);
 
          $phpmailer->Subject = $subject;
-         $phpmailer->Body = $msg;
+         $phpmailer->Body = 
+         '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Account Status</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Good Day! ' . $name . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Your feedback has been verified and the certificate has been sent to your email:  <b>' . $email . '</b></p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Contact us for more details. Number: ' . $hnumber .' or email us at: ' . $gmail . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, feel free to reach out to our support team.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Secretariat</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
 
          $phpmailer->send();            
          $message[] = 'Message Status updated!';  
@@ -1270,7 +1296,31 @@ section{
             <p>Name <span></span></p>
             <input type="text" name="name" value="<?= $fetch_msg['name']; ?>" required class="box" readonly>
             <p>Event Title <span></span></p>
-            <input type="text" name="event_title" value="<?= $fetch_msg['event_title']; ?>" required class="box" readonly>
+            	<select class="box" name="event_title" required>
+               <option value="<?= $fetch_msg['event_title']; ?>" selected><?= $fetch_msg['event_title']; ?></option>
+                <?php 
+                $zoom = $conn->query("SELECT * FROM `zoom`");
+                while ($rowzoom = $zoom->fetch()) {
+                $id = $rowzoom['id'];
+                $title = $rowzoom['title'];
+                $link = $rowzoom['link'];
+                $password = $rowzoom['password'];
+                $start = $rowzoom['start']; 
+                $end = $rowzoom['end']; 
+                $status = $rowzoom['status'];
+                ?>
+                <option value="<?php echo $rowzoom["title"];
+                // The value we usually set is the primary key
+                ?>">
+                <?php echo $rowzoom["title"];
+                // To show the category name to the user
+                ?>
+                </option>
+                <?php 
+                }
+                 // While loop must be terminated
+                ?>
+            	</select>
 			<p>Status </p>
             <select name="status" class="box">
                <option value="<?= $fetch_msg['status']; ?>" selected><?= $fetch_msg['status']; ?></option>

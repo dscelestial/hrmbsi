@@ -25,10 +25,10 @@ if(isset($_POST['submit'])){
    $phpmailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
    $phpmailer->Port = 2525;
 
-   $phpmailer->Username = '1969a7779d071c';
-   $phpmailer->Password = '476aaaaf064ce1';
+   $phpmailer->Username = '2a7c1506066d65';
+   $phpmailer->Password = '15b87228e2aba6';
 
-   $subject = "HRMBSI DLP";
+   $subject = "HRMBSI NEW ADMIN";
    $gmail = "inquiries@hrmbsi.com.ph";
    $hname = "HRMBSI";
    $hnumber = "8-663-0077";
@@ -55,12 +55,7 @@ if(isset($_POST['submit'])){
    $image_tmp_name = $_FILES['image']['tmp_name'];
    $image_folder = '../uploaded_files/'.$rename;
 
-   $msg = "Your account has been created. Kindly wait for the admin to activate your account.
-   Here is the list of your provided details - Name: $name, Email: $email, Profession: $profession
-   
-   Contact us for more details on our number $hnumber or email us at $gmail
-
-   Regards, $hname.";
+   $phpmailer->isHTML(true);
 
    $select_tutor = $conn->prepare("SELECT * FROM `tutors` WHERE email = ?");
    $select_tutor->execute([$email]);
@@ -79,7 +74,32 @@ if(isset($_POST['submit'])){
          $phpmailer->addAddress($email, $name);
 
          $phpmailer->Subject = $subject;
-         $phpmailer->Body = $msg;
+         $phpmailer->Body =
+         '<table style="max-width: 600px; margin: 0 auto; padding: 20px;">'
+               .'<tr>'
+                  .'<div class="tempp">'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center">'
+                     .'<img src="https://dl.dropboxusercontent.com/scl/fi/7yqtrq36ov3o5pd6y362b/resHRMBSi-LOGO_embossed.png?raw=1&rlkey=ifaw5w3bihozd5n9zsd8tbbsr" alt="Your Logo" style="max-width: 15rem;">'
+                  .'</td>'
+                  .'</div>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="padding: 20px; background-color: #ffffff;">'
+                  .'<h1 style="font-size: 24px; margin-bottom: 20px;">Welcome to HRMBSi New Admin!</h1>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Your account has been created!</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5 text-align: center">Your account details:</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;"><b>Name:</b> ' .  $name . ', <b>Email:</b> ' . $email . '</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, feel free to reach out to our support team.</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">Best regards,</p>'
+                  .'<p style="font-size: 16px; line-height: 1.5;">HRMBSi Secretariat</p>'
+                  .'</td>'
+               .'</tr>'
+               .'<tr>'
+                  .'<td style="background-color: #f1f1f1; padding: 20px; text-align: center;">'
+                  .'<p style="font-size: 14px; color: #888888;"> Copyright 2023 HRMBSi - All Rights Reserved.</p>'
+                  .'</td>'
+               .'</tr>'
+            .'</table>';
 
          $phpmailer->send();
          $message[] = 'New tutor registered! Please wait for admin to activate your account.';
